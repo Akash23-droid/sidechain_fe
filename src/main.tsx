@@ -16,19 +16,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         appearance: {
           theme: "light",
           accentColor: "#676FFF",
-          // logo: "https://your-logo-url",
         },
-        // oauth: {
-        //   google: {
-        //     scopes: ["profile", "email"],
-        //   },
-        //   github: {
-        //     scopes: ["user"],
-        //   },
-        //   linkedin: {
-        //     scopes: ["r_liteprofile", "r_emailaddress"],
-        //   },
-        // },
       }}
     >
       <App1 />

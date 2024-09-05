@@ -22,9 +22,12 @@ const Dashboard = () => {
     setIsLoading(true); // Start loading
     const formData = new FormData();
     formData.append("resume", resume);
+    // http://localhost:3000/
     try {
       const response = await axios.post(
+        // production or local env variables
         `https://sidechain-be.vercel.app/upload`, // Update the API endpoint URL
+        // `http://localhost:3000/upload`, // Update the API endpoint URL
         formData,
         {
           headers: {
