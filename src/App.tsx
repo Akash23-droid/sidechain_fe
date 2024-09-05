@@ -11,7 +11,7 @@ import Dashboard2 from "./Component/Dashboard2/Dashboard2.jsx";
 import Login from "./Component/Login.jsx";
 
 function App() {
-  const { authenticated, user, logout } = usePrivy();
+  const { authenticated } = usePrivy();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

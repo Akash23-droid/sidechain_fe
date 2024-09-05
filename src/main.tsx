@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
+import App from "./App";
 import "./index.css";
 import { PrivyProvider } from "@privy-io/react-auth";
 
@@ -18,17 +18,17 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           accentColor: "#676FFF",
           // logo: "https://your-logo-url",
         },
-        oauth: {
-          google: {
-            scopes: ["profile", "email"],
-          },
-          github: {
-            scopes: ["user"],
-          },
-          linkedin: {
-            scopes: ["r_liteprofile", "r_emailaddress"],
-          },
-        },
+        // oauth: {
+        //   google: {
+        //     scopes: ["profile", "email"],
+        //   },
+        //   github: {
+        //     scopes: ["user"],
+        //   },
+        //   linkedin: {
+        //     scopes: ["r_liteprofile", "r_emailaddress"],
+        //   },
+        // },
       }}
     >
       <App />
