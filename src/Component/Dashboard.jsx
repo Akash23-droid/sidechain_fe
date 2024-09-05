@@ -24,7 +24,7 @@ const Dashboard = () => {
     formData.append("resume", resume);
     try {
       const response = await axios.post(
-        "http://localhost:3000/upload",
+        `https://sidechain-be.vercel.app/upload`, // Update the API endpoint URL
         formData,
         {
           headers: {

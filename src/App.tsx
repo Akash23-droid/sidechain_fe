@@ -9,12 +9,6 @@ import {
 import Dashboard from "./Component/Dashboard.jsx";
 import Dashboard2 from "./Component/Dashboard2/Dashboard2.jsx";
 import Login from "./Component/Login.jsx";
-// UI Changes
-// import Scroll from "./Component/Sidebar/Scroll.jsx";
-// import Projects from "./Component/Sidebar/Projects.jsx";
-// import Jobs from "./Component/Sidebar/Jobs.jsx";
-// import Search from "./Component/Sidebar/Search.jsx";
-// import Blog from "./Component/Sidebar/Blog.jsx";
 
 function App() {
   const { authenticated, user, logout } = usePrivy();

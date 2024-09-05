@@ -6,12 +6,6 @@ import GitHubCalendar from "react-github-calendar";
 function MainContainer({ githubUsername, handleJoin }) {
   const { logout } = usePrivy();
   const location = useLocation();
-  // const { skills, projects, education } = location.state || {
-  //   skills: [],
-  //   projects: [],
-  //   education: [],
-  // };
-  // const { user } = usePrivy();
   const [userData, setUserData] = useState({
     name: "",
     avatar_url: "",
