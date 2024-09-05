@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import LeftSidebar from "./LeftSidebar";
-import MainContainer from "./MainContainer";
-import RightSidebar from "./RightSidebar";
+import LeftSidebar from "./LeftSidebar1";
+import MainContainer from "./MainContainer1";
+import RightSidebar from "./RightSidebar1";
 import { usePrivy } from "@privy-io/react-auth";
 
 function Dashboard2() {

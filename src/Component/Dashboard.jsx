@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { usePrivy } from "@privy-io/react-auth";
-import LoadingScreen from "../Component/LoadingScreen"; // Import the LoadingScreen component
+import LoadingScreen from "../Component/LoadingScreen1"; // Import the LoadingScreen component
 
 const Dashboard = () => {
   const [resume, setResume] = useState(null);

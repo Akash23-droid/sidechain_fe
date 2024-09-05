@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import App1 from "./App1";
 import "./index.css";
 import { PrivyProvider } from "@privy-io/react-auth";
 
@@ -31,7 +31,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         // },
       }}
     >
-      <App />
+      <App1 />
     </PrivyProvider>
   </React.StrictMode>
 );

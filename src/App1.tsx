@@ -10,7 +10,7 @@ import Dashboard from "./Component/Dashboard.jsx";
 import Dashboard2 from "./Component/Dashboard2/Dashboard2.jsx";
 import Login from "./Component/Login.jsx";
 
-function App() {
+function App1() {
   const { authenticated } = usePrivy();
   const [loading, setLoading] = useState(true);
 
@@ -47,4 +47,4 @@ function App() {
   );
 }
 
-export default App;
+export default App1;
