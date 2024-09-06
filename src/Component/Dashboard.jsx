@@ -25,7 +25,7 @@ const Dashboard = () => {
     // production or local env variables
     try {
       const response = await axios.post(
-        `https://sidechain-kb2s5rha1-akashs-projects-271485dc.vercel.app/upload`, // Update the API endpoint URL
+        `https://be-sidechain.vercel.app/upload`, // Update the API endpoint URL
         // `http://localhost:3000/upload`, // Update the API endpoint URL
         formData,
         {
