@@ -80,11 +80,13 @@ function MainContainer({ githubUsername, handleJoin }) {
         <div className="w-10/12 ">
           <UserProfile userData={userData} />
         </div>
+        
         <div className="opacity-100">
           <div className=" w-full h-full mx-0">
             {githubUsername && <UserData username={githubUsername} />}
           </div>
         </div>
+        
       </main>
     </div>
   );

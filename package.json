@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.4.4",
+    "@google-cloud/local-auth": "^2.1.0",
     "@privy-io/react-auth": "^1.81.2",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.5",
     "cors": "^2.8.5",
+    "googleapis": "^105.0.0",
     "postcss": "^8.4.41",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

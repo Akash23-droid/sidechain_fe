@@ -41,7 +41,7 @@ const Dashboard = () => {
       const usernameMatch = githubLink.match(/github\.com\/([^/]+)\/?$/);
       const githubUsername = usernameMatch ? usernameMatch[1] : "";
 
-      // Navigate to Dashboard2 with all the response data
+      // Navigate to Dashboard2 with all the response data 
       navigate("/dashboard2", { state: { ...data, githubUsername } });
     } catch (error) {
       console.error("Error uploading resume:", error);

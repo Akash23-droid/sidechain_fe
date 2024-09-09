@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import LeftSidebar from "./LeftSidebar1";
 import MainContainer from "./MainContainer1";
@@ -12,22 +12,59 @@ function Dashboard2() {
     githubUsername: "",
   };
   const { user } = usePrivy();
-  const { skills } = location.state;
-  console.log("skills : ", skills);
+  const { skills } = location?.state;
+  
+  const [loginDetails, setLoginDetails] = useState({
+    method: "Unknown",
+    username: "",
+    email: "",
+    url: "",
+    clientId: "", 
+    profilePicture: "" 
+  });
 
   useEffect(() => {
-    // Check if user data is available
     if (user) {
-      console.log("Privy User Details:", {
-        email: user.email || "No email found",
-        username: user.username || "No username found",
-        id: user.id || "No user ID found",
-      });
+      const loginInfo = {
+        method: "Unknown",
+        username: "",
+        email: "",
+        url: "",
+        clientId: user.id || "", 
+        profilePicture: "" 
+      };
+      loginInfo.email = user?.google?.email;
+      console.log("loginInfo.email : ", loginInfo?.email);
+      console.log("user email : ", user?.email);
+
+
+      if (user.google) {
+        loginInfo.method = "Google";
+        loginInfo.username = user.google.name;
+        loginInfo.email = user.google.email;
+        loginInfo.profilePicture = user.google.picture; 
+      } else if (user.github) {
+        loginInfo.method = "GitHub";
+        loginInfo.username = user.github.username;
+        loginInfo.url = user.github.profile || `https://github.com/${user.github.username}`;
+        loginInfo.email = user.github.email;
+        loginInfo.profilePicture = user.github.avatar_url; 
+      } else if (user.email) {
+        loginInfo.method = "Email";
+        loginInfo.email = user.email;
+      } else if (user.wallet) {
+        loginInfo.method = "Wallet";
+        loginInfo.username = user.wallet.address;
+      }
+
+      setLoginDetails(loginInfo);
+
+      console.log("Login Details:", loginInfo);
+      console.log("Client ID:", loginInfo.clientId);
     } else {
       console.log("User data not available");
     }
 
-    // Log data from the Dashboard component
     console.log("Data from Dashboard:", { skills, githubUsername });
   }, [skills, githubUsername, user]);
 
@@ -39,7 +76,34 @@ function Dashboard2() {
 
       <div className="flex-1">
         <MainContainer skills={skills} githubUsername={githubUsername} />
+        
+        <div className="text-center mt-4">
+          <p>Logged in via: {loginDetails.method}</p>
+          {loginDetails.profilePicture && (
+            <img
+              src={loginDetails.profilePicture}
+              alt="Profile"
+              style={{ width: "100px", borderRadius: "50%" }}
+            />
+          )}
+          
+          {loginDetails.method === "Google" && (
+            <p>Google Username: {loginDetails.username}, Email: {loginDetails.email}</p>
+          )}
+          {loginDetails.method === "GitHub" && (
+            <p>GitHub Username: {loginDetails.username}, URL: {loginDetails.url},  Email: {loginDetails.email}</p>
+          )}
+          {loginDetails.method === "Email" && (
+            <p>Email: {loginDetails.email}</p>
+          )}
+          {loginDetails.method === "Wallet" && (
+            <p>Wallet Address: {loginDetails.username}</p>
+          )}
+
+          <p>Client ID: {loginDetails.clientId}</p>
+        </div>
       </div>
+
       <div className="hidden lg:block">
         <RightSidebar />
       </div>
