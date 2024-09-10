@@ -46,6 +46,7 @@ function UserData({ username }) {
             <article
               className="flex flex-col justify-between flex-1 group border border-gray-300 hover:shadow-lg rounded-lg overflow-hidden transition-shadow"
               role="none"
+              key={index}
             >
               <a href="#" className="flex flex-col justify-between h-full p-4">
                 <div className="flex items-start justify-between">
