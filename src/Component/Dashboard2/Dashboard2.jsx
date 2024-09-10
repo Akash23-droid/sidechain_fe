@@ -4,6 +4,7 @@ import LeftSidebar from "./LeftSidebar1";
 import MainContainer from "./MainContainer1";
 import RightSidebar from "./RightSidebar1";
 import { usePrivy } from "@privy-io/react-auth";
+// import { supabase } from "../Supabase/supabaseClient";
 
 function Dashboard2() {
   const location = useLocation();
@@ -14,6 +15,7 @@ function Dashboard2() {
   const { user } = usePrivy();
   const { skills } = location.state;
   console.log("skills : ", skills);
+  console.log("supabase : ", supabase);
 
   useEffect(() => {
     // Check if user data is available
@@ -26,7 +28,9 @@ function Dashboard2() {
     } else {
       console.log("User data not available");
     }
-
+    console.log("email : ", user.email);
+    console.log("username : ", user.username);
+    console.log("id : ", user.id);
     // Log data from the Dashboard component
     console.log("Data from Dashboard:", { skills, githubUsername });
   }, [skills, githubUsername, user]);

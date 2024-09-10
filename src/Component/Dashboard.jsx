@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { usePrivy } from "@privy-io/react-auth";
 import LoadingScreen from "../Component/LoadingScreen1"; // Import the LoadingScreen component
+import { supabase } from "./Supabase/supabaseClient";
 
 const Dashboard = () => {
   const [resume, setResume] = useState(null);
@@ -10,6 +11,16 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { logout } = usePrivy();
   const navigate = useNavigate();
+  const { user, isAuthenticated } = usePrivy();
+  const [userData, setUserData] = useState(null);
+  const [loginDetails, setLoginDetails] = useState({
+    method: "Unknown",
+    username: "",
+    email: "",
+    url: "",
+    clientId: "",
+    profilePicture: "",
+  });
 
   const handleFileChange = (event) => {
     if (event.target.files) {
@@ -22,11 +33,9 @@ const Dashboard = () => {
     setIsLoading(true); // Start loading
     const formData = new FormData();
     formData.append("resume", resume);
-    // production or local env variables
     try {
       const response = await axios.post(
         `https://be-sidechain.vercel.app/upload`, // Update the API endpoint URL
-        // `http://localhost:3000/upload`, // Update the API endpoint URL
         formData,
         {
           headers: {
@@ -34,14 +43,10 @@ const Dashboard = () => {
           },
         }
       );
-
       const data = response.data;
-      console.log("data : ", data);
-      // Extract GitHub username from the link
       const usernameMatch = githubLink.match(/github\.com\/([^/]+)\/?$/);
       const githubUsername = usernameMatch ? usernameMatch[1] : "";
 
-      // Navigate to Dashboard2 with all the response data
       navigate("/dashboard2", { state: { ...data, githubUsername } });
     } catch (error) {
       console.error("Error uploading resume:", error);
@@ -53,6 +58,93 @@ const Dashboard = () => {
     await logout();
     window.location.href = "/";
   };
+
+  const extractUserInfo = (user) => {
+    const mappings = {
+      google: {
+        method: "Google",
+        username: user.google?.name,
+        email: user.google?.email,
+        profilePicture: user.google?.picture,
+        clientId: user.google?.subject,
+      },
+      github: {
+        method: "GitHub",
+        username: user.github?.username,
+        url:
+          user.github?.profile || `https://github.com/${user.github?.username}`,
+        // email: user.github?.email || user.github?.username,
+        email: (
+          user.github?.email || `${user.github?.username}@github.com`
+        ).replace(/-/g, ""),
+        clientId: user.github?.subject,
+        profilePicture: user.github?.avatar_url,
+      },
+      email: {
+        method: "Email",
+        email: user.email,
+      },
+      wallet: {
+        method: "Wallet",
+        username: user.wallet?.address,
+      },
+    };
+
+    for (const [key, value] of Object.entries(mappings)) {
+      if (user[key]) {
+        return value;
+      }
+    }
+
+    return loginDetails; // Default unknown login details
+  };
+
+  useEffect(() => {
+    const storeUserData = async () => {
+      if (user) {
+        console.log("user : ", user);
+
+        const loginInfo = extractUserInfo(user);
+        setLoginDetails(loginInfo);
+
+        console.log("Login Details:", loginInfo);
+        console.log("Client ID:", loginInfo.clientId);
+
+        const username = loginInfo.username;
+        const email = loginInfo.email;
+        const name = loginInfo.method;
+        const profileUrl = loginInfo.profilePicture;
+
+        const { error } = await supabase
+          .from("users") // Assuming you have a 'users' table in Supabase
+          .insert([{ username, email, name, profile_url: profileUrl }]);
+
+        if (error) {
+          console.error("Error storing user data in Supabase:", error);
+        } else {
+          console.log("User data successfully stored in Supabase");
+        }
+
+        setUserData({ username, email, name, profileUrl });
+        console.log("userData : ", userData);
+      }
+    };
+
+    storeUserData();
+  }, [isAuthenticated, user]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const { data, error } = await supabase.from("users").select("*");
+      if (error) {
+        console.error("Error fetching user data from Supabase:", error);
+      } else {
+        console.log("Fetched user data from Supabase:", data);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -84,18 +176,7 @@ const Dashboard = () => {
               type="url"
               value={githubLink}
               onChange={(e) => setGithubLink(e.target.value)}
-              className="
-                                w-full
-                                px-4 py-2
-                                border border-gray-300
-                                rounded-md
-                                shadow-sm
-                                text-sm
-                                focus:border-indigo-500
-                                focus:ring
-                                focus:ring-indigo-200
-                                focus:ring-opacity-50
-                            "
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               placeholder="https://github.com/your-username"
               required
             />

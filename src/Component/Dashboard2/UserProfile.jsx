@@ -10,11 +10,11 @@ function UserProfile({ userData }) {
     <div className="border-b border-gray-300">
       <div className="bg-white py-10 px-4 flex flex-col items-center">
         <img
-          src={userData.avatar_url}
+          src={userData?.avatar_url}
           alt="User Avatar"
           className="w-20 h-20 rounded-full mb-4"
         />
-        <h2 className="text-xl font-semibold mb-2">{userData.username}</h2>
+        <h2 className="text-xl font-semibold mb-2">{userData?.username}</h2>
         <p className="text-black-600 text-sm">Software Engineer</p>
         <div className="flex items-center text-black-400 text-sm mt-2 mb-4">
           <svg
@@ -47,12 +47,12 @@ function UserProfile({ userData }) {
             />
           </svg>
           <a
-            href={`https://github.com/${userData.username}`}
+            href={`https://github.com/${userData?.username}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500 underline"
           >
-            {`https://github.com/${userData.username}`}
+            {`https://github.com/${userData?.username}`}
           </a>
         </div>
 
