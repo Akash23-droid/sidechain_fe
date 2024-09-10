@@ -15,7 +15,7 @@ function Dashboard2() {
   const { user } = usePrivy();
   const { skills } = location.state;
   console.log("skills : ", skills);
-  console.log("supabase : ", supabase);
+  // console.log("supabase : ", supabase);
 
   useEffect(() => {
     // Check if user data is available
