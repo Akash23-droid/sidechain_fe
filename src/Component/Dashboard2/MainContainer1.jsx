@@ -18,7 +18,6 @@ function MainContainer({ githubUsername, handleJoin }) {
     username: "",
   });
   const { skills } = location.state;
-  console.log("skills : ", skills);
 
   useEffect(() => {
     const fetchGitHubUserData = async () => {

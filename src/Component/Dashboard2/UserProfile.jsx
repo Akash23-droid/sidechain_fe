@@ -5,7 +5,6 @@ function UserProfile({ userData }) {
   const location = useLocation();
 
   const { skills } = location.state;
-  console.log("skills : ", skills);
   return (
     <div className="border-b border-gray-300">
       <div className="bg-white py-10 px-4 flex flex-col items-center">

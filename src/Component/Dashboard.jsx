@@ -102,13 +102,8 @@ const Dashboard = () => {
   useEffect(() => {
     const storeUserData = async () => {
       if (user) {
-        console.log("user : ", user);
-
         const loginInfo = extractUserInfo(user);
         setLoginDetails(loginInfo);
-
-        console.log("Login Details:", loginInfo);
-        console.log("Client ID:", loginInfo.clientId);
 
         const username = loginInfo.username;
         const email = loginInfo.email;
@@ -126,7 +121,6 @@ const Dashboard = () => {
         }
 
         setUserData({ username, email, name, profileUrl });
-        console.log("userData : ", userData);
       }
     };
 
@@ -138,9 +132,10 @@ const Dashboard = () => {
       const { data, error } = await supabase.from("users").select("*");
       if (error) {
         console.error("Error fetching user data from Supabase:", error);
-      } else {
-        console.log("Fetched user data from Supabase:", data);
       }
+      // else {
+      //   console.log("Fetched user data from Supabase:");
+      // }
     };
 
     fetchUserData();

@@ -14,26 +14,6 @@ function Dashboard2() {
   };
   const { user } = usePrivy();
   const { skills } = location.state;
-  console.log("skills : ", skills);
-  console.log("supabase : ", supabase);
-
-  useEffect(() => {
-    // Check if user data is available
-    if (user) {
-      console.log("Privy User Details:", {
-        email: user.email || "No email found",
-        username: user.username || "No username found",
-        id: user.id || "No user ID found",
-      });
-    } else {
-      console.log("User data not available");
-    }
-    console.log("email : ", user.email);
-    console.log("username : ", user.username);
-    console.log("id : ", user.id);
-    // Log data from the Dashboard component
-    console.log("Data from Dashboard:", { skills, githubUsername });
-  }, [skills, githubUsername, user]);
 
   return (
     <div className="flex h-screen">
