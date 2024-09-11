@@ -13,6 +13,7 @@
     "@clerk/clerk-react": "^5.4.4",
     "@google-cloud/local-auth": "^2.1.0",
     "@privy-io/react-auth": "^1.81.2",
+    "@react-oauth/google": "^0.12.1",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.5",
     "cors": "^2.8.5",

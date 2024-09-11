@@ -9,10 +9,9 @@ import {
 import Dashboard from "./Component/Dashboard.jsx";
 import Dashboard2 from "./Component/Dashboard2/Dashboard2.jsx";
 import Login from "./Component/Login.jsx";
-import Work from "./Component/Dashboard2/MidNavbar/Work.jsx";
-import Resume from "./Component/Dashboard2/MidNavbar/Resume.jsx";
-import Hiring from "./Component/Dashboard2/MidNavbar/Hiring.jsx";
-import Posts from "./Component/Dashboard2/MidNavbar/Posts.jsx";
+import Jobs from "./Component/Dashboard2/Jobs.jsx";
+
+
 
 function App1() {
   const { authenticated } = usePrivy();
@@ -41,14 +40,19 @@ function App1() {
           path="/dashboard"
           element={authenticated ? <Dashboard /> : <Navigate to="/" />}
         />
+
         <Route
           path="/dashboard2/*"
           element={authenticated ? <Dashboard2 /> : <Navigate to="/" />}
         />
-        <Route path="/work" element={<Work/>} />
+        <Route
+          path="/jobs"
+          element={authenticated ? <Jobs/> : <Navigate to="/" />}
+        />
+        {/* <Route path="/work" element={<Work/>} />
         <Route path="/resume" element={<Resume/>} />
         <Route path="/hiring" element={<Hiring />} />
-        <Route path="/posts" element={<Posts/>} />
+        <Route path="/posts" element={<Posts/>} /> */}
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
