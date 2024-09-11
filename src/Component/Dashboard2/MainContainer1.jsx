@@ -1,23 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { usePrivy } from "@privy-io/react-auth";
-import { useLocation } from "react-router-dom";
-import GitHubCalendar from "react-github-calendar";
+import {
+  useLocation,
+  Route,
+  Routes,
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
 import {
   ChatBubbleOvalLeftEllipsisIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import UserProfile from "./UserProfile";
 import UserData from "./UserData";
+import Resume from "../MidContainerRoutes/Resume";
+import Hiring from "../MidContainerRoutes/Hiring";
+import Posts from "../MidContainerRoutes/Posts";
 
 function MainContainer({ githubUsername, handleJoin }) {
   const { logout } = usePrivy();
   const location = useLocation();
+  const navigate = useNavigate();
   const [userData, setUserData] = useState({
     name: "",
     avatar_url: "",
     username: "",
   });
-  const { skills } = location.state;
+  const { skills } = location?.state || { skills: [] };
 
   useEffect(() => {
     const fetchGitHubUserData = async () => {
@@ -43,7 +52,7 @@ function MainContainer({ githubUsername, handleJoin }) {
 
   const handleLogout = async () => {
     await logout();
-    window.location.href = "/";
+    navigate("/");
   };
 
   return (
@@ -74,15 +83,72 @@ function MainContainer({ githubUsername, handleJoin }) {
         </div>
       </nav>
 
-      {/* Main content */}
-      <main className="flex-1 flex flex-col items-center mt-20 space-y-4 overflow-y-auto px-4 md:px-8 lg:px-16">
-        <div className="w-10/12 ">
+      <main className="flex-1 flex flex-col items-center mt-20 space-y-4 overflow-y-auto px-4 md:px-8 lg:px-16 w-full">
+        <div className="w-10/12">
           <UserProfile userData={userData} />
         </div>
-        <div className="opacity-100">
-          <div className=" w-full h-full mx-0">
-            {githubUsername && <UserData username={githubUsername} />}
-          </div>
+
+        <div className="w-full flex justify-between sticky top-14 z-[7] bg-white">
+          <ul className="flex items-center text-sm mx-auto gap-6 overflow-x-auto">
+            <li>
+              <NavLink
+                to=""
+                end
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex whitespace-nowrap text-center items-center justify-between py-2.5 text-xs transition-all ease-in duration-75 font-semibold text-green-600 border-b-2 border-green-600"
+                    : "flex whitespace-nowrap text-center items-center justify-between py-2.5 text-xs transition-all ease-in duration-75 hover:border-gray-500 font-medium text-gray-800 border-b-2 border-transparent"
+                }
+              >
+                WORK
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="resume"
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex whitespace-nowrap text-center items-center justify-between py-2.5 text-xs transition-all ease-in duration-75 font-semibold text-green-600 border-b-2 border-green-600"
+                    : "flex whitespace-nowrap text-center items-center justify-between py-2.5 text-xs transition-all ease-in duration-75 hover:border-gray-500 font-medium text-gray-800 border-b-2 border-transparent"
+                }
+              >
+                RESUME
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="hiring"
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex whitespace-nowrap text-center items-center justify-between py-2.5 text-xs transition-all ease-in duration-75 font-semibold text-green-600 border-b-2 border-green-600"
+                    : "flex whitespace-nowrap text-center items-center justify-between py-2.5 text-xs transition-all ease-in duration-75 hover:border-gray-500 font-medium text-gray-800 border-b-2 border-transparent"
+                }
+              >
+                I'M HIRING
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="posts"
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex whitespace-nowrap text-center items-center justify-between py-2.5 text-xs transition-all ease-in duration-75 font-semibold text-green-600 border-b-2 border-green-600"
+                    : "flex whitespace-nowrap text-center items-center justify-between py-2.5 text-xs transition-all ease-in duration-75 hover:border-gray-500 font-medium text-gray-800 border-b-2 border-transparent"
+                }
+              >
+                POSTS
+              </NavLink>
+            </li>
+          </ul>
+        </div>
+
+        <div className="w-full">
+          <Routes>
+            <Route index element={<UserData username={githubUsername} />} />
+            <Route path="resume" element={<Resume />} />
+            <Route path="hiring" element={<Hiring />} />
+            <Route path="posts" element={<Posts />} />
+          </Routes>
         </div>
       </main>
     </div>
@@ -90,67 +156,3 @@ function MainContainer({ githubUsername, handleJoin }) {
 }
 
 export default MainContainer;
-
-// {skills.length > 0 ? (
-//   <ul className="list-disc pl-5 mb-4">
-//     {skills.map((skill, index) => (
-//       <li key={index} className="py-1">
-//         {/* <i className={`${skill.icon} text-2xl mr-2`}></i> */}
-//         <i
-//           className={`${skill.icon} text-2xl mr-2`}
-//           onError={(e) =>
-//             (e.target.className =
-//               "devicon-devicon-plain text-2xl mr-2")
-//           }
-//         ></i>
-//         <span>{skill.name}</span>
-//       </li>
-//     ))}
-//   </ul>
-// ) : (
-//   <p className="mb-4">No skills found. Please upload your resume.</p>
-// )}
-
-{
-  /* <h2 className="text-2xl font-semibold mb-4">Your Projects:</h2>
-          {projects?.length > 0 ? (
-            <ul className="list-disc pl-5 mb-4">
-              {projects?.map((project, index) => (
-                <li key={index} className="py-1">
-                  {project}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mb-4">No projects found.</p>
-          )} */
-}
-
-{
-  /* <h2 className="text-2xl font-semibold mb-4">Your Education:</h2>
-          {education?.length > 0 ? (
-            <ul className="list-disc pl-5 mb-4">
-              {education?.map((edu, index) => (
-                <li key={index} className="py-1">
-                  {edu}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mb-4">No education information found.</p>
-          )} */
-}
-
-// {githubUsername && (
-//   <div>
-//     <h3>GitHub Contributions for {githubUsername}:</h3>
-//     <GitHubCalendar username={githubUsername} />
-//   </div>
-// )}
-
-// <button
-//   onClick={handleLogout}
-//   className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-// >
-//   Logout
-// </button>

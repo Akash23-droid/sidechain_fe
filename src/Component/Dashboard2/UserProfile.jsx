@@ -4,7 +4,11 @@ import { useLocation } from "react-router-dom";
 function UserProfile({ userData }) {
   const location = useLocation();
 
-  const { skills } = location.state;
+  // const { skills } = location.state;
+  const { githubUsername, skills } = location.state || {
+    githubUsername: "",
+    skills: [],
+  };
   return (
     <div className="border-b border-gray-300">
       <div className="bg-white py-10 px-4 flex flex-col items-center">
@@ -83,7 +87,7 @@ function UserProfile({ userData }) {
           )}
         </div>
       </div>
-      <div className="flex justify-between sticky top-14 z-[7]">
+      {/* <div className="flex justify-between sticky top-14 z-[7]">
         <div className="w-full">
           <div className="bg-white sm:px-6 px-4 mr-[1px]">
             <div className="flex items-center bg-white">
@@ -115,7 +119,7 @@ function UserProfile({ userData }) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
