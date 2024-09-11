@@ -8,12 +8,17 @@ import { usePrivy } from "@privy-io/react-auth";
 
 function Dashboard2() {
   const location = useLocation();
-  const { githubUsername } = location.state || {
-    skills: [],
-    githubUsername: "",
-  };
+  // const { githubUsername } = location.state || {
+  //   skills: [],
+  //   githubUsername: "",
+  // };
+  // const { githubUsername, skills } = location.state || {
+  //   githubUsername: "",
+  //   skills: [],
+  // };
+  const { githubUsername = "", skills = [] } = location.state || {};
   const { user } = usePrivy();
-  const { skills } = location.state;
+  // const { skills } = location?.state;
 
   return (
     <div className="flex h-screen">

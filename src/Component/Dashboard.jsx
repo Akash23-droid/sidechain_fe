@@ -47,7 +47,13 @@ const Dashboard = () => {
       const usernameMatch = githubLink.match(/github\.com\/([^/]+)\/?$/);
       const githubUsername = usernameMatch ? usernameMatch[1] : "";
 
-      navigate("/dashboard2", { state: { ...data, githubUsername } });
+      // navigate("/dashboard2", { state: { ...data, githubUsername } });
+      navigate("/dashboard2", {
+        state: {
+          skills: data.skills || [],
+          githubUsername: githubUsername || "",
+        },
+      });
     } catch (error) {
       console.error("Error uploading resume:", error);
       setIsLoading(false); // Stop loading on error

@@ -23,7 +23,7 @@ function App1() {
   }, [authenticated]);
 
   if (loading) {
-    return <div>Loading...</div>; // Optionally, add a loader here
+    return <div>Loading...</div>;
   }
 
   return (
@@ -38,7 +38,7 @@ function App1() {
           element={authenticated ? <Dashboard /> : <Navigate to="/" />}
         />
         <Route
-          path="/dashboard2"
+          path="/dashboard2/*"
           element={authenticated ? <Dashboard2 /> : <Navigate to="/" />}
         />
         <Route path="*" element={<Navigate to="/" />} />
