@@ -11,7 +11,11 @@ function LeftSidebar() {
   return (
     <aside className="w-64 bg-white shadow-lg flex flex-col fixed top-0 left-0 bottom-0 p-4 border-r border-gray-300">
       <div className="p-4 border-b border-gray-200">
-        <img src="" alt="Logo" className="w-32 h-auto" />
+        <img
+          src="https://static-production.npmjs.com/58a19602036db1daee0d7863c94673a4.png"
+          alt="Logo"
+          className="w-32 h-auto"
+        />
       </div>
       <nav className="flex-1 overflow-y-auto">
         <ul className="space-y-2 p-4">
