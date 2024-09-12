@@ -53,7 +53,6 @@ function RightSidebar() {
         </button>
       </div>
       <ul className="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
-        {console.log("jobs: ", jobs)}
         {jobs.map((jobs) => {
           return (
             <li className="pb-3 sm:pb-4">
