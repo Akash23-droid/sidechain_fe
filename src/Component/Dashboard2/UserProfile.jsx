@@ -27,7 +27,6 @@ function UserProfile({ userData }) {
 
     fetchProjects();
   }, []);
-  console.log("projects : ", projects);
 
   return (
     <div className="border-b border-gray-300">
