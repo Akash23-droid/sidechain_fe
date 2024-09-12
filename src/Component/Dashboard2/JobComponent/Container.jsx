@@ -4,9 +4,11 @@ import { IoIosArrowDown } from "react-icons/io"; // Import icons for Category an
 import { RiUser6Fill } from "react-icons/ri"; // Import user icon
 import { FaMapMarkerAlt, FaDollarSign, FaCalendarAlt } from "react-icons/fa"; // Import location, dollar, and calendar icons
 import { supabase } from "../../Supabase/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 const Container = () => {
   const [jobs, setJobs] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -23,6 +25,14 @@ const Container = () => {
 
     fetchJobs();
   }, []);
+  const handleApply = (jobTitle, jobId) => {
+    // console.log("jobTitle : ", jobTitle);
+    // console.log("jobId : ", jobId);
+    // Use the job title for the URL, but pass the job ID as state
+    const urlFriendlyJobTitle = jobTitle.toLowerCase().replace(/\s+/g, "-");
+    navigate(`/jobs/${urlFriendlyJobTitle}`, { state: { jobId } });
+  };
+
   return (
     <div className="w-[90%] h-full mx-auto bg-white p-2 flex flex-col space-y-5">
       {/* Header and Paragraph */}
@@ -64,8 +74,16 @@ const Container = () => {
             className="w-full bg-slate-100 rounded-md p-3 px-6 flex flex-col space-y-4"
           >
             <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                <img src={job.logo} alt={`${job.company_name} logo`} />
+              <div
+                className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center"
+                style={{ width: "25%", height: "35%" }}
+              >
+                <img
+                  // src={job.logo}
+                  src="https://supabase.com/dashboard/img/supabase-logo.svg"
+                  alt={`${job.company_name} logo`}
+                  // style={{ width: "0px", height: "0px" }}
+                />
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-semibold">
@@ -91,7 +109,13 @@ const Container = () => {
                     <span>{job.payscale}</span>
                   </div>
                 </div>
-                <button className="bg-black text-white rounded-md py-1 px-3 mr-2">
+                {/* <button className="bg-black text-white rounded-md py-1 px-3 mr-2">
+                  Apply
+                </button> */}
+                <button
+                  className="bg-black text-white rounded-md py-1 px-3 mr-2"
+                  onClick={() => handleApply(job.job_title, job.id)}
+                >
                   Apply
                 </button>
               </div>

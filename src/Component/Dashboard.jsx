@@ -4,6 +4,7 @@ import axios from "axios";
 import { usePrivy } from "@privy-io/react-auth";
 import LoadingScreen from "../Component/LoadingScreen1"; // Import the LoadingScreen component
 import { supabase } from "./Supabase/supabaseClient";
+// import { checkUserExists, insertUser } from "./Supabase/supabaseUtils";
 
 const Dashboard = () => {
   const [resume, setResume] = useState(null);
@@ -108,31 +109,127 @@ const Dashboard = () => {
 
   useEffect(() => {
     const storeUserData = async () => {
-      if (user) {
+      if (user && isAuthenticated) {
         const loginInfo = extractUserInfo(user);
-        setLoginDetails(loginInfo);
 
-        const username = loginInfo.username;
-        const email = loginInfo.email;
-        const name = loginInfo.method;
-        const profileUrl = loginInfo.profilePicture;
+        if (loginInfo) {
+          const { username, email, method, profilePicture } = loginInfo;
 
-        const { error } = await supabase
-          .from("users") // Assuming you have a 'users' table in Supabase
-          .insert([{ username, email, name, profile_url: profileUrl }]);
+          // Check if the user already exists in Supabase
+          const { data: existingUser, error: fetchError } = await supabase
+            .from("users")
+            .select("*")
+            .eq("email", email)
+            .single(); // fetch a single user
 
-        if (error) {
-          console.error("Error storing user data in Supabase:", error);
-        } else {
-          console.log("User data successfully stored in Supabase");
+          if (fetchError && fetchError.code === "PGRST116") {
+            console.log("User not found in Supabase. Proceeding to insert.");
+
+            // User does not exist, so insert new user data
+            const { error: insertError } = await supabase.from("users").insert([
+              {
+                username,
+                email,
+                name: method,
+                profile_url: profilePicture,
+              },
+            ]);
+
+            if (insertError) {
+              console.error(
+                "Error inserting new user data into Supabase:",
+                insertError
+              );
+            } else {
+              console.log("New user inserted into Supabase");
+              setUserData({ username, email, method, profilePicture });
+            }
+          } else if (existingUser) {
+            console.log("User already exists in Supabase.");
+            setUserData(existingUser);
+          } else if (fetchError) {
+            console.error(
+              "Error fetching user data from Supabase:",
+              fetchError
+            );
+          }
         }
-
-        setUserData({ username, email, name, profileUrl });
       }
     };
 
     storeUserData();
   }, [isAuthenticated, user]);
+
+  // useEffect(() => {
+  //   const storeUserData = async () => {
+  //     if (user) {
+  //       const loginInfo = extractUserInfo(user);
+  //       setLoginDetails(loginInfo);
+
+  //       const username = loginInfo.username;
+  //       const email = loginInfo.email;
+  //       const name = loginInfo.method;
+  //       const profileUrl = loginInfo.profilePicture;
+
+  //       const userExistsResult = await checkUserExists(email);
+
+  //       if (userExistsResult === null) {
+  //         console.error(
+  //           "Error checking user existence. Skipping user data storage."
+  //         );
+  //         return;
+  //       }
+
+  //       if (!userExistsResult) {
+  //         const inserted = await insertUser({
+  //           username,
+  //           email,
+  //           name,
+  //           profile_url: profileUrl,
+  //         });
+  //         if (inserted) {
+  //           console.log("User data successfully stored in Supabase");
+  //         } else {
+  //           console.error("Failed to insert user data");
+  //         }
+  //       } else {
+  //         console.log("User already exists in the database");
+  //       }
+
+  //       setUserData({ username, email, name, profileUrl });
+  //     }
+  //   };
+
+  //   storeUserData();
+  // }, [isAuthenticated, user]);
+
+  // useEffect(() => {
+  //   const storeUserData = async () => {
+  //     if (user) {
+  //       const loginInfo = extractUserInfo(user);
+  //       setLoginDetails(loginInfo);
+
+  //       const username = loginInfo.username;
+  //       const email = loginInfo.email;
+  //       const name = loginInfo.method;
+  //       const profileUrl = loginInfo.profilePicture;
+
+  //       const { error } = await supabase
+  //         .from("users") // Assuming you have a 'users' table in Supabase
+  //         .insert([{ username, email, name, profile_url: profileUrl }]);
+
+  //       if (error) {
+  //         console.error("Error storing user data in Supabase:", error);
+  //       } else {
+  //         console.log("User data successfully stored in Supabase");
+  //       }
+
+  //       setUserData({ username, email, name, profileUrl });
+  //     }
+  //   };
+
+  //   storeUserData();
+  // }, [isAuthenticated, user]);
 
   useEffect(() => {
     const fetchUserData = async () => {

@@ -73,13 +73,13 @@ function MainContainer({ githubUsername, handleJoin }) {
           <EllipsisVerticalIcon className="w-6 h-6 text-gray-700 hover:text-blue-600 cursor-pointer" />
           <ChatBubbleOvalLeftEllipsisIcon className="w-6 h-6 text-gray-700 hover:text-blue-600 cursor-pointer" />
 
-          <button
+          {/* <button
             type="button"
             onClick={handleJoin}
             className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-3 py-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
           >
             Follow
-          </button>
+          </button> */}
         </div>
       </nav>
 
@@ -88,7 +88,10 @@ function MainContainer({ githubUsername, handleJoin }) {
           <UserProfile userData={userData} />
         </div>
 
-        <div className="w-full flex justify-between sticky top-14 z-[7] bg-white">
+        <div
+          className="w-full flex justify-between sticky top-14 z-[7] bg-white"
+          style={{ width: "50%" }}
+        >
           <ul className="flex items-center text-sm mx-auto gap-6 overflow-x-auto">
             <li>
               <NavLink

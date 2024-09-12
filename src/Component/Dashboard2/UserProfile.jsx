@@ -18,6 +18,7 @@ function UserProfile({ userData }) {
       try {
         const response = await axios.get(
           "https://be-sidechain.vercel.app/data"
+          // "http://localhost:3000/data"
         );
         setProjects(response.data.projects || []); // Set projects data
       } catch (error) {
