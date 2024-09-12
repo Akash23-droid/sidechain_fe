@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi"; // Import search icon
 import { IoIosArrowDown } from "react-icons/io"; // Import icons for Category and Type
 import { RiUser6Fill } from "react-icons/ri"; // Import user icon
 import { FaMapMarkerAlt, FaDollarSign, FaCalendarAlt } from "react-icons/fa"; // Import location, dollar, and calendar icons
+import { supabase } from "../../Supabase/supabaseClient";
 
 const Container = () => {
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const { data, error } = await supabase
+        .from("jobs") // your table name
+        .select("*"); // fetch all rows and columns
+
+      if (error) {
+        console.error("Error fetching jobs:", error);
+      } else {
+        setJobs(data);
+      }
+    };
+
+    fetchJobs();
+  }, []);
   return (
     <div className="w-[90%] h-full mx-auto bg-white p-2 flex flex-col space-y-5">
       {/* Header and Paragraph */}
@@ -39,164 +57,49 @@ const Container = () => {
       </div>
 
       {/* Card */}
-      <div className="w-full bg-slate-100 rounded-md p-3 px-6 flex flex-col space-y-4">
-        {/* Card Header */}
-        <div className="flex items-center space-x-4">
-          <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-            <span className="text-xs text-gray-600">Logo</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold">Company Name</span>
-            <p className="text-sm text-gray-700 mt-1">
-              This is a brief description of the company.
-            </p>
-            <div className="flex items-center mt-2 bg-slate-200 rounded-full p-1">
-              <RiUser6Fill className="text-gray-700 mr-2" />
-              <p className="text-xs text-gray-700">
-                Less than 10 people work here
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Additional Box Inside the Card */}
-        <div className="border border-gray-300 bg-slate-100 rounded-md p-2 flex flex-col space-y-2 ">
-          <div className="flex items-center space-x-4">
-            <div className="w-9 h-5 bg-blue-500 rounded-full flex items-center justify-center ml-2">
-              <span className="text-xs text-white">Job</span>
-            </div>
-            <span className="text-sm font-semibold">Role</span>
-          </div>
-          {/* Location, Duration, Payscale Row */}
-          <div className="flex w-full text-xs text-gray-600 justify-between items-center">
-            <div className="flex space-x-4 ml-12">
-              <div className="flex items-center space-x-1">
-                <FaMapMarkerAlt className="text-gray-400" />
-                <span className="text-gray-400">Location Name</span>
+      <div className="w-[90%] h-full mx-auto bg-white p-2 flex flex-col space-y-5">
+        {jobs.map((job) => (
+          <div
+            key={job.id}
+            className="w-full bg-slate-100 rounded-md p-3 px-6 flex flex-col space-y-4"
+          >
+            <div className="flex items-center space-x-4">
+              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                <img src={job.logo} alt={`${job.company_name} logo`} />
               </div>
-              <div className="flex items-center space-x-1">
-                <FaCalendarAlt className="text-gray-400" />
-                <span className="text-gray-400">Duration</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <FaDollarSign className="text-gray-400" />
-                <span className="text-gray-400">Payscale</span>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold">
+                  {job.company_name}
+                </span>
+                <p className="text-sm text-gray-700 mt-1">{job.description}</p>
+                <div className="flex items-center mt-2 bg-slate-200 rounded-full p-1">
+                  <p className="text-xs text-gray-700">{job.employee_count}</p>
+                </div>
               </div>
             </div>
-            {/* Apply Button */}
-            <button className="bg-black text-white rounded-md py-1 px-3 mr-2">
-              Apply
-            </button>{" "}
-            {/* Added some margin-right to adjust */}
-          </div>
-
-          <div className="border-t border-gray-300 my-4"></div>
-
-          <div className="flex items-center space-x-4">
-            <div className="w-9 h-5 bg-blue-500 rounded-full flex items-center justify-center ml-2">
-              <span className="text-xs text-white">Job</span>
-            </div>
-            <span className="text-sm font-semibold">Role</span>
-          </div>
-
-          {/* Location, Duration, Payscale Row */}
-          <div className="flex w-full text-xs text-gray-600 justify-between items-center">
-            <div className="flex space-x-4 ml-12">
-              <div className="flex items-center space-x-1">
-                <FaMapMarkerAlt className="text-gray-400" />
-                <span className="text-gray-400">Location Name</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <FaCalendarAlt className="text-gray-400" />
-                <span className="text-gray-400">Duration</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <FaDollarSign className="text-gray-400" />
-                <span className="text-gray-400">Payscale</span>
+            <div className="border border-gray-300 bg-slate-100 rounded-md p-2 flex flex-col space-y-2">
+              <span className="text-sm font-semibold">{job.job_title}</span>
+              <div className="flex w-full text-xs text-gray-600 justify-between items-center">
+                <div className="flex space-x-4 ml-12">
+                  <div className="flex items-center space-x-1">
+                    <span>{job.location}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span>{job.duration}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span>{job.payscale}</span>
+                  </div>
+                </div>
+                <button className="bg-black text-white rounded-md py-1 px-3 mr-2">
+                  Apply
+                </button>
               </div>
             </div>
-            {/* Apply Button */}
-            <button className="bg-black text-white rounded-md py-1 px-3 mr-2">
-              Apply
-            </button>{" "}
-            {/* Added some margin-right to adjust */}
           </div>
-        </div>
+        ))}
       </div>
       {/* Card */}
-      <div className="w-full bg-slate-100 rounded-md p-6 flex flex-col space-y-4">
-        {/* Card Header */}
-        <div className="flex items-center space-x-4">
-          <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-            <span className="text-xs text-gray-600">Logo</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold">Company Name</span>
-            <p className="text-sm text-gray-700 mt-1">
-              This is a brief description of the company.
-            </p>
-            <div className="flex items-center mt-2 bg-slate-200 rounded-md p-2">
-              <RiUser6Fill className="text-gray-700 mr-2" />
-              <p className="text-xs text-gray-700">
-                Less than 10 people work here
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Additional Box Inside the Card */}
-        <div className="border border-gray-300 bg-slate-100 rounded-md p-3 flex flex-col space-y-4 ">
-          <div className="flex items-center space-x-4">
-            <div className="w-9 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-              <span className="text-xs text-white">Job</span>
-            </div>
-            <span className="text-sm font-semibold">Role</span>
-          </div>
-          <div className="flex w-full space-x-4 text-xs text-gray-600 ml-12">
-            <div className="flex items-center space-x-1">
-              <FaMapMarkerAlt className="text-gray-400" />
-              <span className="text-gray-400">Location Name</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <FaCalendarAlt className="text-gray-400" />
-              <span className="text-gray-400">Duration</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <FaDollarSign className="text-gray-400" />
-              <span className="text-gray-400">Payscale</span>
-            </div>
-            <button className="bg-black text-white rounded-md py-1 px-3">
-              Apply
-            </button>
-          </div>
-
-          <div className="border-t border-gray-300 my-4"></div>
-
-          <div className="flex items-center space-x-4">
-            <div className="w-9 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-              <span className="text-xs text-white">Job</span>
-            </div>
-            <span className="text-sm font-semibold">Role</span>
-          </div>
-          <div className="flex w-full space-x-4 text-xs text-gray-600 ml-12">
-            <div className="flex items-center space-x-1">
-              <FaMapMarkerAlt className="text-gray-400" />
-              <span className="text-gray-400">Location Name</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <FaCalendarAlt className="text-gray-400" />
-              <span className="text-gray-400">Duration</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <FaDollarSign className="text-gray-400" />
-              <span className="text-gray-400">Payscale</span>
-            </div>
-            <button className="bg-black text-white rounded-md py-1 px-3">
-              Apply
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
