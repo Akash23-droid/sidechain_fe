@@ -12,7 +12,7 @@ function RightSidebar() {
   };
 
   const handleJoin = () => {
-    navigate("/");
+    navigate("/jobs");
   };
 
   return (

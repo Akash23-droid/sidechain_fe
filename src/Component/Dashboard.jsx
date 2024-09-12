@@ -36,6 +36,7 @@ const Dashboard = () => {
     try {
       const response = await axios.post(
         `https://be-sidechain.vercel.app/upload`, // Update the API endpoint URL
+        // `http://localhost:3000/upload`,
         formData,
         {
           headers: {
