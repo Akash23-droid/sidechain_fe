@@ -11,6 +11,7 @@ import Dashboard2 from "./Component/Dashboard2/Dashboard2.jsx";
 import Login from "./Component/Login.jsx";
 import Jobs from "./Component/Dashboard2/Jobs.jsx";
 import JobNotion from "./Component/Dashboard2/JobComponent/JobNotion.jsx";
+import LoadingScreen from "./Component/LoadingScreen1.jsx";
 
 function App1() {
   const { ready, authenticated } = usePrivy();
@@ -25,7 +26,7 @@ function App1() {
   // }, [authenticated]);
 
   if (!ready) {
-    return <div>Loading...</div>;
+    return <LoadingScreen />;
   }
 
   return (

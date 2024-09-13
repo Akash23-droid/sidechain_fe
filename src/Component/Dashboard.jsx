@@ -107,102 +107,6 @@ const Dashboard = () => {
     return loginDetails; // Default unknown login details
   };
 
-  useEffect(() => {
-    const storeUserData = async () => {
-      if (user && isAuthenticated) {
-        const loginInfo = extractUserInfo(user);
-
-        if (loginInfo) {
-          const { username, email, method, profilePicture } = loginInfo;
-
-          // Check if the user already exists in Supabase
-          const { data: existingUser, error: fetchError } = await supabase
-            .from("users")
-            .select("*")
-            .eq("email", email)
-            .single(); // fetch a single user
-
-          if (fetchError && fetchError.code === "PGRST116") {
-            console.log("User not found in Supabase. Proceeding to insert.");
-
-            // User does not exist, so insert new user data
-            const { error: insertError } = await supabase.from("users").insert([
-              {
-                username,
-                email,
-                name: method,
-                profile_url: profilePicture,
-              },
-            ]);
-
-            if (insertError) {
-              console.error(
-                "Error inserting new user data into Supabase:",
-                insertError
-              );
-            } else {
-              console.log("New user inserted into Supabase");
-              setUserData({ username, email, method, profilePicture });
-            }
-          } else if (existingUser) {
-            console.log("User already exists in Supabase.");
-            setUserData(existingUser);
-          } else if (fetchError) {
-            console.error(
-              "Error fetching user data from Supabase:",
-              fetchError
-            );
-          }
-        }
-      }
-    };
-
-    storeUserData();
-  }, [isAuthenticated, user]);
-
-  // useEffect(() => {
-  //   const storeUserData = async () => {
-  //     if (user) {
-  //       const loginInfo = extractUserInfo(user);
-  //       setLoginDetails(loginInfo);
-
-  //       const username = loginInfo.username;
-  //       const email = loginInfo.email;
-  //       const name = loginInfo.method;
-  //       const profileUrl = loginInfo.profilePicture;
-
-  //       const userExistsResult = await checkUserExists(email);
-
-  //       if (userExistsResult === null) {
-  //         console.error(
-  //           "Error checking user existence. Skipping user data storage."
-  //         );
-  //         return;
-  //       }
-
-  //       if (!userExistsResult) {
-  //         const inserted = await insertUser({
-  //           username,
-  //           email,
-  //           name,
-  //           profile_url: profileUrl,
-  //         });
-  //         if (inserted) {
-  //           console.log("User data successfully stored in Supabase");
-  //         } else {
-  //           console.error("Failed to insert user data");
-  //         }
-  //       } else {
-  //         console.log("User already exists in the database");
-  //       }
-
-  //       setUserData({ username, email, name, profileUrl });
-  //     }
-  //   };
-
-  //   storeUserData();
-  // }, [isAuthenticated, user]);
-
   // useEffect(() => {
   //   const storeUserData = async () => {
   //     if (user) {
@@ -230,6 +134,48 @@ const Dashboard = () => {
 
   //   storeUserData();
   // }, [isAuthenticated, user]);
+
+  useEffect(() => {
+    const storeUserData = async () => {
+      if (user) {
+        const loginInfo = extractUserInfo(user);
+        setLoginDetails(loginInfo);
+
+        const { username, email, name, profilePicture: profileUrl } = loginInfo;
+
+        // Check if the user already exists in the 'users' table by email
+        const { data: existingUser, error: fetchError } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", email)
+          .maybeSingle(); // Use maybeSingle to allow for no results
+
+        if (fetchError) {
+          console.error("Error checking for existing user:", fetchError);
+          return;
+        }
+
+        // If the user doesn't exist, insert the new user data
+        if (!existingUser) {
+          const { error: insertError } = await supabase
+            .from("users")
+            .insert([{ username, email, name, profile_url: profileUrl }]);
+
+          if (insertError) {
+            console.error("Error storing user data in Supabase:", insertError);
+          } else {
+            console.log("User data successfully stored in Supabase");
+          }
+        } else {
+          console.log("User already exists in Supabase, skipping insert.");
+        }
+
+        setUserData({ username, email, name, profileUrl });
+      }
+    };
+
+    storeUserData();
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     const fetchUserData = async () => {
