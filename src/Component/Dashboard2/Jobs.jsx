@@ -5,7 +5,7 @@ import Container from "./JobComponent/Container";
 
 const Jobs = () => {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gray-900 text-white">
       <Sidebar />
       <MainContent />
     </div>

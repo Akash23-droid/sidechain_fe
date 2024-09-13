@@ -52,10 +52,13 @@ function RightSidebar() {
           Jobs
         </button>
       </div>
+      <h1 className="my-7 text-3xl underline font-extralight text-slate-500">
+        Jobs
+      </h1>
       <ul className="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
-        {jobs.map((jobs) => {
+        {jobs.map((jobs, index) => {
           return (
-            <li className="pb-3 sm:pb-4">
+            <li className="pb-3 sm:pb-4" key={index}>
               <div className="flex items-center space-x-4 rtl:space-x-reverse">
                 {/* <div className="flex-shrink-0">
                   <img

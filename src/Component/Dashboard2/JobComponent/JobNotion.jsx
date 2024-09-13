@@ -3,6 +3,8 @@ import { useParams, useLocation } from "react-router-dom";
 import { supabase } from "../../Supabase/supabaseClient";
 import { FaMapMarkerAlt, FaDollarSign, FaCalendarAlt } from "react-icons/fa";
 import { usePrivy } from "@privy-io/react-auth";
+import { useNavigate } from "react-router-dom";
+import LoadingScreen from "../../LoadingScreen1";
 
 const JobNotion = () => {
   const [job, setJob] = useState(null);
@@ -14,6 +16,7 @@ const JobNotion = () => {
   const [otherJobs, setOtherJobs] = useState([]);
   const { user, isAuthenticated } = usePrivy();
   const [LoggedInUser, setLoggedInUser] = useState("");
+  const navigate = useNavigate();
 
   //   useEffect(() => {
   //     const fetchJobDetails = async () => {
@@ -86,15 +89,21 @@ const JobNotion = () => {
   const jobsToShow = showAllJobs ? otherJobs : otherJobs.slice(0, 2);
 
   if (!job) {
-    return <div>Loading...</div>;
+    return <LoadingScreen />;
   }
+  const handleLogo = () => {
+    navigate("/dashboard2");
+  };
 
   return (
     <div className="bg-gray-900 text-gray-100 min-h-screen">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="flex justify-between items-center mb-8">
-          <div className="flex items-center">
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={handleLogo}
+          >
             <img
               src="https://static-production.npmjs.com/58a19602036db1daee0d7863c94673a4.png"
               alt="Sidechain Logo"
@@ -118,13 +127,13 @@ const JobNotion = () => {
         {/* Banner Image */}
         <div
           className="h-40 bg-gradient-to-r from-red-500 via-yellow-500 to-red-500 rounded-lg mb-8"
-          style={{ height: "300px", borderRadius: "30px" }}
+          style={{ height: "250px", borderRadius: "10px" }}
         >
-          {/* <img
-            src="https://png.pngtree.com/background/20210709/original/pngtree-smoke-black-background-picture-image_322080.jpg"
+          <img
+            src="./Job_Banner.png"
             alt=""
             style={{ width: "100%", height: "100%" }}
-          /> */}
+          />
         </div>
 
         {/* Company Info */}
