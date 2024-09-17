@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App1 from "./App1";
 import "./index.css";
 import { PrivyProvider } from "@privy-io/react-auth";
+import { UserProvider } from "./Component/Context/UserContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -19,7 +20,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         },
       }}
     >
-      <App1 />
+      <UserProvider>
+        <App1 />
+      </UserProvider>
     </PrivyProvider>
   </React.StrictMode>
 );

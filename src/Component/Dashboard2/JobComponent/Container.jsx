@@ -6,11 +6,46 @@ import { FaMapMarkerAlt, FaDollarSign, FaCalendarAlt } from "react-icons/fa"; //
 import { supabase } from "../../Supabase/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../../LoadingScreen1";
+import { useUser } from "../../Context/UserContext";
 
 const Container = () => {
   const [jobs, setJobs] = useState([]);
   // const [isLoading, setIsLoading] = useState(true); // Track loading state
   const navigate = useNavigate();
+  const { userDetails } = useUser();
+  const [matchingUser, setMatchingUser] = useState(null);
+  // console.log("userDetails : ", userDetails);
+
+  useEffect(() => {
+    // Fetch matching user data from Supabase user table
+    const fetchMatchingUserData = async () => {
+      if (!userDetails || !userDetails.name) {
+        // console.log("User details not available");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("username", userDetails.name)
+        .single();
+
+      if (error) {
+        if (error.code === "PGRST116") {
+          // console.log("No matching user found");
+          setMatchingUser(null);
+        } else {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        // console.log("Matching user data:", data);
+        setMatchingUser(data);
+        // console.log("It's matching!");
+      }
+    };
+
+    fetchMatchingUserData();
+  }, [userDetails]);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -23,19 +58,44 @@ const Container = () => {
       } else {
         setJobs(data);
       }
-      // Ensure the loader shows for at least 2 seconds
-      // setTimeout(() => {
-      //   setIsLoading(false);
-      // }, 2000);
     };
 
     fetchJobs();
   }, []);
-  const handleApply = (jobTitle, jobId) => {
+  const handleApply = async (job, jobTitle, jobId) => {
     // Use the job title for the URL, but pass the job ID as state
+    if (matchingUser) {
+      // console.log(
+      //   `Matching user ${matchingUser.username} applied for job:`,
+      //   job
+      // );
+      // console.log("job.id : ", job.id);
+
+      // Insert the application data into the job_application_view table
+      const { data, error } = await supabase
+        .from("job_application_view")
+        .insert({
+          user_id: matchingUser.id,
+          job_id: job.id,
+          user_name: matchingUser.username,
+          company_name: job.company_name, // Changed from job_title to company_name
+        });
+
+      if (error) {
+        console.error("Error inserting job application:", error);
+      }
+      // else {
+      //   console.log("Job application inserted successfully:", data);
+      // }
+    }
+    // else {
+    //   console.log("Non-matching user tried to apply for job:", job);
+    // }
+
     const urlFriendlyJobTitle = jobTitle.toLowerCase().replace(/\s+/g, "-");
     navigate(`/jobs/${urlFriendlyJobTitle}`, { state: { jobId } });
   };
+
   // if (isLoading) {
   //   return <LoadingScreen />;
   // }
@@ -116,7 +176,7 @@ const Container = () => {
                 </div>
                 <button
                   className="bg-gray-900 text-white rounded-md py-1 px-3 mr-2"
-                  onClick={() => handleApply(job.job_title, job.id)}
+                  onClick={() => handleApply(job, job.job_title, job.id)}
                 >
                   Apply
                 </button>

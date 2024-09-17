@@ -18,26 +18,6 @@ const JobNotion = () => {
   const [LoggedInUser, setLoggedInUser] = useState("");
   const navigate = useNavigate();
 
-  //   useEffect(() => {
-  //     const fetchJobDetails = async () => {
-  //       if (!jobId) return;
-
-  //       const { data, error } = await supabase
-  //         .from("jobs")
-  //         .select("*")
-  //         .eq("id", jobId)
-  //         .single();
-
-  //       if (error) {
-  //         console.error("Error fetching job details:", error);
-  //       } else {
-  //         setJob(data);
-  //       }
-  //     };
-
-  //     fetchJobDetails();
-  //   }, [jobId]);
-  // Fetch the current job details when jobId changes
   useEffect(() => {
     const fetchJobDetails = async () => {
       if (!jobId) return;
@@ -51,29 +31,28 @@ const JobNotion = () => {
       if (error) {
         console.error("Error fetching job details:", error);
       } else {
-        setJob(data); // store the fetched job in the state
+        setJob(data);
       }
     };
 
     fetchJobDetails();
 
-    // Fetch other jobs excluding the current job
     const fetchOtherJobs = async () => {
       const { data, error } = await supabase
         .from("jobs")
         .select("*")
-        .neq("id", jobId) // Fetch all jobs except the current one
-        .limit(10); // Limit to 10 jobs
+        .neq("id", jobId)
+        .limit(10);
 
       if (error) {
         console.error("Error fetching other jobs:", error);
       } else {
-        setOtherJobs(data); // store other jobs in the state
+        setOtherJobs(data);
       }
     };
 
     fetchOtherJobs();
-  }, [jobId]); // Fetch jobs whenever jobId changes
+  }, [jobId]);
 
   // Handle click on the "Apply" button
   const handleApplyClick = (selectedJobId) => {
@@ -310,14 +289,3 @@ const JobNotion = () => {
 };
 
 export default JobNotion;
-// import React from "react";
-
-// function JobNotion() {
-//   return (
-//     <div>
-//       <h1>JobNotion</h1>
-//     </div>
-//   );
-// }
-
-// export default JobNotion;
