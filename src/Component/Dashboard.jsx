@@ -163,12 +163,14 @@ const Dashboard = () => {
 
           if (insertError) {
             console.error("Error storing user data in Supabase:", insertError);
-          } else {
-            console.log("User data successfully stored in Supabase");
           }
-        } else {
-          console.log("User already exists in Supabase, skipping insert.");
+          // else {
+          //   console.log("User data successfully stored in Supabase");
+          // }
         }
+        // else {
+        //   console.log("User already exists in Supabase, skipping insert.");
+        // }
 
         setUserData({ username, email, name, profileUrl });
       }

@@ -5,6 +5,7 @@ import { FaMapMarkerAlt, FaDollarSign, FaCalendarAlt } from "react-icons/fa";
 import { usePrivy } from "@privy-io/react-auth";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../../LoadingScreen1";
+import { useUser } from "../../Context/UserContext";
 
 const JobNotion = () => {
   const [job, setJob] = useState(null);
@@ -17,6 +18,40 @@ const JobNotion = () => {
   const { user, isAuthenticated } = usePrivy();
   const [LoggedInUser, setLoggedInUser] = useState("");
   const navigate = useNavigate();
+  const { userDetails } = useUser();
+
+  const [matchingUser, setMatchingUser] = useState(null);
+
+  useEffect(() => {
+    // Fetch matching user data from Supabase user table
+    const fetchMatchingUserData = async () => {
+      if (!userDetails || !userDetails.name) {
+        // console.log("User details not available");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("username", userDetails.name)
+        .single();
+
+      if (error) {
+        if (error.code === "PGRST116") {
+          // console.log("No matching user found");
+          setMatchingUser(null);
+        } else {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        // console.log("Matching user data:", data);
+        setMatchingUser(data);
+        // console.log("It's matching!");
+      }
+    };
+
+    fetchMatchingUserData();
+  }, [userDetails]);
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -55,8 +90,62 @@ const JobNotion = () => {
   }, [jobId]);
 
   // Handle click on the "Apply" button
-  const handleApplyClick = (selectedJobId) => {
-    setJobId(selectedJobId); // Update jobId, which triggers a re-fetch of job data
+  // Updated handleApplyClick function
+  const handleApplyClick = async (
+    selectedJob,
+    selectedJobId,
+    selectedJobTitle
+  ) => {
+    setJobId(selectedJobId);
+    if (matchingUser) {
+      const { data, error } = await supabase
+        .from("job_application_view")
+        .insert({
+          user_id: matchingUser.id,
+          job_id: selectedJob.id,
+          user_name: matchingUser.username,
+          company_name: selectedJob.company_name,
+        });
+
+      if (error) {
+        console.error("Error inserting job application:", error);
+      } else {
+        console.log("Job application inserted successfully:", data);
+      }
+    } else {
+      console.log("Non-matching user tried to apply for job:", job);
+    }
+    const urlFriendlyJobTitle = selectedJobTitle
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+    navigate(`/jobs/${urlFriendlyJobTitle}`, {
+      state: { jobId: selectedJobId },
+    });
+  };
+
+  const handleJobApply = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("job_applications_apply")
+        .insert({
+          user_id: matchingUser.id,
+          job_id: job.id,
+          user_name: matchingUser.username,
+          company_name: job.company_name,
+          applied_at: new Date().toISOString(),
+        });
+
+      if (error) {
+        console.error("Error applying for job:", error);
+      }
+      alert("Applied Successfully!!!");
+      // else {
+      //   console.log("Job application submitted successfully:", data);
+      //   // You can add user feedback here, like a success message
+      // }
+    } catch (error) {
+      console.error("Error in job application process:", error);
+    }
   };
 
   // Toggle showing more jobs
@@ -91,7 +180,10 @@ const JobNotion = () => {
             <span className="text-xl font-semibold text-white">sidechain</span>
           </div>
           <div className="space-x-4">
-            <button className="bg-blue-700 text-white px-4 py-2 rounded-full hover:bg-gray-600">
+            <button
+              className="bg-blue-700 text-white px-4 py-2 rounded-full hover:bg-gray-600"
+              onClick={handleJobApply}
+            >
               Apply
             </button>
             {/* <button className="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-600">
@@ -215,7 +307,13 @@ const JobNotion = () => {
                 </div>
                 <button
                   className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-500"
-                  onClick={() => handleApplyClick(otherJob.id)}
+                  onClick={() =>
+                    handleApplyClick(
+                      otherJob,
+                      otherJob.id,
+                      otherJob.company_name
+                    )
+                  }
                 >
                   Apply
                 </button>
